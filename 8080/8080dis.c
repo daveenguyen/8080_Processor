@@ -14,7 +14,8 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
     // '&' says pointer (*code) is set to the address of codebuffer[pc]
     unsigned char *code = &codebuffer[pc];
     unsigned char opbytes = 1;
-    printf ("%04x ", code[0]);
+    printf("%04x "); // This prints the address
+    printf("0x%02x: ", code[0]);
     switch (*code)
     {
         case 0x00:
@@ -48,7 +49,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DAD     B");
             break;
         case 0x0a:
-            printf("LDAX    B")
+            printf("LDAX    B");
             break;
         case 0x0b:
             printf("DCX     B");
@@ -112,6 +113,57 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             break;
         case 0x1f:
             printf("RAR");
+            break;
+        case 0x20:
+            printf("RIM");
+            break;
+        case 0x21:
+            printf("LXI     H, #$%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0x22: // -- TODO --
+            printf("SHLD    #$%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0x23:
+            printf("INX     H");
+            break;
+        case 0x24:
+            printf("INR     H");
+            break;
+        case 0x25:
+            printf("DCR     H");
+            break;
+        case 0x26:
+            printf("MVI     H, #0x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0x27:
+            printf("DAA");
+            break;
+
+        case 0x29:
+            printf("DAD     H");
+            break;
+        case 0x2a: // -- TODO --
+            printf("LHLD    #$%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0x2b:
+            printf("DCX     H");
+            break;
+        case 0x2c:
+            printf("INR     L");
+            break;
+        case 0x2d:
+            printf("DCR     L");
+            break;
+        case 0x2e:
+            printf("MVI     L, #0x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0x2f:
+            printf("CMA");
             break;
         /* ........ */
         case 0x3e:
