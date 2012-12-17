@@ -38,27 +38,95 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             break;
         case 0x06:
             printf("MVI     B, #$%02x", code[1]);
-            opbytes=2;
+            opbytes = 2;
             break;
         case 0x07:
             printf("RLC");
             break;
-        case 0x08:
-            printf("NOP");
-            break;
+
         case 0x09:
-            printf("");
+            printf("DAD     B");
+            break;
+        case 0x0a:
+            printf("LDAX    B")
+            break;
+        case 0x0b:
+            printf("DCX     B");
+            break;
+        case 0x0c:
+            printf("INR     C");
+            break;
+        case 0x0d:
+            printf("DCR     C");
+            break;
+        case 0x0e:
+            printf("MVI     C, #0x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0x0f:
+            printf("RRC");
+            break;
+
+        case 0x11:
+            printf("LXI     D, #$%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0x12:
+            printf("STAX    D");
+            break;
+        case 0x13:
+            printf("INX     D");
+            break;
+        case 0x14:
+            printf("INR     D");
+            break;
+        case 0x15:
+            printf("DCR     D");
+            break;
+        case 0x16:
+            printf("MVI     D, #0x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0x17:
+            printf("RAL");
+            break;
+
+        case 0x19:
+            printf("DAD     D");
+            break;
+        case 0x1a:
+            printf("LDAX    D");
+            break;
+        case 0x1b:
+            printf("DCX     D");
+            break;
+        case 0x1c:
+            printf("INR     E");
+            break;
+        case 0x1d:
+            printf("DCR     E");
+            break;
+        case 0x1e:
+            printf("MVI     E, #0x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0x1f:
+            printf("RAR");
+            break;
         /* ........ */
         case 0x3e:
             printf("MVI     A, #0x%02x", code[1]);
-            opbytes=2;
+            opbytes = 2;
             break;
         /* ........ */
         case 0xc3:
             printf("JMP     $%02x%02x",code[2],code[1]);
-            opbytes=3;
+            opbytes = 3;
             break;
         /* ........ */
+        default:
+            printf("Unsupported Opcode!");
+            break;
     }
 
     printf("\n");
