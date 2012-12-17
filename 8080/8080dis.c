@@ -600,10 +600,59 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
         case 0xbf:
             printf("CMP     A");
             break;
-        /* ........ */
-        case 0xc3:
-            printf("JMP     $%02x%02x",code[2],code[1]);
+        case 0xc0:
+            printf("RNZ");
+            break;
+        case 0xc1:
+            printf("POP     B");
+            break;
+        case 0xc2:
+            printf("JNZ     $%02x%02x", code[2], code[1]);
             opbytes = 3;
+            break;
+        case 0xc3:
+            printf("JMP     $%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0xc4:
+            printf("CNZ     $%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0xc5:
+            printf("PUSH    B");
+            break;
+        case 0xc6:
+            printf("ADI     #$%02x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0xc7:
+            printf("RST     0");
+            break;
+        case 0xc8:
+            printf("RZ");
+            break;
+        case 0xc9:
+            printf("RET");
+            break;
+        case 0xca:
+            printf("JZ      $%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+
+        case 0xcc:
+            printf("CZ      $%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0xcd:
+            printf("CALL    $%02x%02x", code[2], code[1]);
+            opbytes = 3;
+            break;
+        case 0xce:
+            printf("ACI     #$%02x%02x", code[1]);
+            opbytes = 2;
+            break;
+        case 0xcf:
+            printf("RST     1");
             break;
         /* ........ */
         default:
