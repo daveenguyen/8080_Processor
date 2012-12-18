@@ -15,7 +15,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
     unsigned char *code = &codebuffer[pc];
     unsigned char opbytes = 1;
     printf("%04x "); // This prints the address
-    printf("0x%02x: ", code[0]);
+    printf("$%02x: ", code[0]);
     switch (*code)
     {
         case 0x00:
@@ -61,7 +61,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     C");
             break;
         case 0x0e:
-            printf("MVI     C, #0x%02x", code[1]);
+            printf("MVI     C, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x0f:
@@ -85,7 +85,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     D");
             break;
         case 0x16:
-            printf("MVI     D, #0x%02x", code[1]);
+            printf("MVI     D, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x17:
@@ -108,7 +108,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     E");
             break;
         case 0x1e:
-            printf("MVI     E, #0x%02x", code[1]);
+            printf("MVI     E, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x1f:
@@ -135,7 +135,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     H");
             break;
         case 0x26:
-            printf("MVI     H, #0x%02x", code[1]);
+            printf("MVI     H, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x27:
@@ -159,7 +159,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     L");
             break;
         case 0x2e:
-            printf("MVI     L, #0x%02x", code[1]);
+            printf("MVI     L, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x2f:
@@ -186,7 +186,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     M");
             break;
         case 0x36:
-            printf("MVI     M, #0x%02x", code[1]);
+            printf("MVI     M, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x37:
@@ -210,7 +210,7 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("DCR     A");
             break;
         case 0x3e:
-            printf("MVI     A, #0x%02x", code[1]);
+            printf("MVI     A, #$%02x", code[1]);
             opbytes = 2;
             break;
         case 0x3f:
