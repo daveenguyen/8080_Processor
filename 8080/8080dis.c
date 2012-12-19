@@ -121,8 +121,8 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("LXI     H, #$%02x%02x", code[2], code[1]);
             opbytes = 3;
             break;
-        case 0x22: // -- TODO --
-            printf("SHLD    ($%02x%02x)", code[2], code[1]);
+        case 0x22:
+            printf("SHLD    $%02x%02x", code[2], code[1]);
             opbytes = 3;
             break;
         case 0x23:
@@ -145,8 +145,8 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
         case 0x29:
             printf("DAD     H");
             break;
-        case 0x2a: // -- TODO --
-            printf("LHLD    ($%02x%02x)", code[2], code[1]);
+        case 0x2a:
+            printf("LHLD    $%02x%02x", code[2], code[1]);
             opbytes = 3;
             break;
         case 0x2b:
@@ -172,8 +172,8 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
             printf("LXI     SP, #$%02x%02x", code[2], code[1]);
             opbytes = 3;
             break;
-        case 0x32: // -- TODO --
-            printf("STA     ($%02x%02x)", code[2], code[1]);
+        case 0x32:
+            printf("STA     $%02x%02x", code[2], code[1]);
             opbytes = 3;
             break;
         case 0x33:
@@ -196,8 +196,8 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
         case 0x39:
             printf("DAD     SP");
             break;
-        case 0x3a: // -- TODO --
-            printf("LDA     ($%02x%02x)", code[2], code[1]);
+        case 0x3a:
+            printf("LDA     $%02x%02x", code[2], code[1]);
             opbytes = 3;
             break;
         case 0x3b:
