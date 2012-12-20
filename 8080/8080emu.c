@@ -1,5 +1,31 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+typedef struct ConditionCodes {
+    uint8_t     z:1;
+    uint8_t     s:1;
+    uint8_t     p:1;
+    uint8_t     cy:1;
+    uint8_t     ac:1;
+    uint8_t     pad:3;
+} ConditionCodes;
+
+typedef struct State8080 {
+    uint8_t     a;
+    uint8_t     b;
+    uint8_t     c;
+    uint8_t     d;
+    uint8_t     e;
+    uint8_t     h;
+    uint8_t     l;
+    uint16_t    sp;
+    uint16_t    pc;
+    uint8_t     *memory;
+    struct      ConditionCodes      cc;
+    uint8_t     int_enable;
+} State8080;
+
 
 /**
  *  @param *codebuffer is a valid pointer to 8080 assembly code
@@ -7,11 +33,8 @@
  *
  *  @return the number of bytes of the op
  */
- 
-
 int Disassemble8080Op(unsigned char *codebuffer, int pc)
 {
-    // '&' says pointer (*code) is set to the address of codebuffer[pc]
     unsigned char *code = &codebuffer[pc];
     unsigned char opbytes = 1;
     printf("%04x ", pc);
@@ -821,30 +844,44 @@ int Disassemble8080Op(unsigned char *codebuffer, int pc)
     return opbytes;
 }
 
+void UnimplementedInstruction(State8080* state)
+{
+    // pc will have advanced one, so undo that
+    printf ("Error: Unimplemented instruction\n");
+    exit(1);
+}
+
+void Emulate8080Op(State8080* state)
+{
+    unsigned char *opcode = &state->memory[state->pc];
+
+    switch(*opcode)
+    {
+        case 0x00: // NOP
+            break;
+        case 0x01: // LXI B, word
+            state->c = opcode[1];
+            state->b = opcode[2];
+            state->pc += 2; // Advance 2 more bytes
+            break;
+        /*....*/
+        case 0x41: // MOV B, C
+            state-> b = state->c;
+            break;
+        case 0x42: // MOV B, D
+            state-> b = state->d;
+            break;
+        case 0x43: // MOV B, E
+            state-> b = state->e;
+            break;
+        default:
+            UnimplementedInstruction(state);
+            break;
+    }
+    state->pc+=1; // for the opcode
+}
+
 int main (int argc, char**argv)
 {
-    FILE *f = fopen(argv[1], "rb");
-    if (f==NULL)
-    {
-        printf("error: Couldn't open %s\n", argv[1]);
-        exit(1);
-    }
-
-    // Get the file size and read it into a memory buffer
-    fseek(f, 0L, SEEK_END);
-    int fsize = ftell(f);
-    fseek(f, 0L, SEEK_SET);
-
-    unsigned char *buffer=malloc(fsize);
-
-    fread(buffer, fsize, 1, f);
-    fclose(f);
-
-    int pc = 0;
-
-    while (pc < fsize)
-    {
-        pc += Disassemble8080Op(buffer, pc);
-    }
     return 0;
 }
