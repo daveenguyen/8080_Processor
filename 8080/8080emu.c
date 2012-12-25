@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// ConditinCodes are also known as flags
 typedef struct ConditionCodes {
-    uint8_t     z:1;
-    uint8_t     s:1;
-    uint8_t     p:1;
-    uint8_t     cy:1;
-    uint8_t     ac:1;
+    uint8_t     z:1;    // Zero
+    uint8_t     s:1;    // Sign
+    uint8_t     p:1;    // Parity
+    uint8_t     cy:1;   // Carry
+    uint8_t     ac:1;   // Auxillary Carry
     uint8_t     pad:3;
 } ConditionCodes;
 
@@ -874,6 +875,62 @@ void Emulate8080Op(State8080* state)
         case 0x43: // MOV B, E
             state-> b = state->e;
             break;
+        /*....*/
+        case 0x80: // ADD B
+        {
+            // do math with higher precision so we can capture the
+            // carry out
+            uint16_t answer = (uint16_t) state->a + (uint16_t) state ->b;
+
+            // Zero flag: if the result is zero,
+            // set the flag to zero
+            // else clear the flag
+            if ((answer & 0xff) == 0)
+                state->cc.z = 1;
+            else
+                state->cc.z = 0;
+
+            // Carry flag
+            if (answer > 0xff)
+                state->cc.cy = 1;
+            else
+                state->cc.cy = 0;
+
+            // Parity is handled by a subroutine
+            state->cc.p = Parity(answer & 0xff);
+
+            state->a = answer & 0xff;
+        }
+        // The code for ADD can be condensed like this
+        case 0x81: // ADD C
+        {
+            uint16_t answer = (uint16_t) state->a + (uint16_t) state->c;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = (answer & 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->a = answer & 0xff;
+        }
+        case 0x86: // ADD M
+        {
+            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t answer = (uint16_t) state->a + state->memory[offset];
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = (answer & 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->a = answer & 0xff;
+        }
+        /*....*/
+        case 0xC6: // ADI byte
+        {
+            uint16_t answer = (uint16_t) state->a + (uint16_t) opcode[1];
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = (answer & 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->a = answer & 0xff;
+        }
         default:
             UnimplementedInstruction(state);
             break;
