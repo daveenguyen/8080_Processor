@@ -867,7 +867,7 @@ void Emulate8080Op(State8080* state)
             break;
         case 0x03: // INX B
         {
-            uint16_t pair = (state->b<<8) | (state->c);
+            uint16_t pair = (state->b << 8) | (state->c);
             pair = pair + 1;
             state->b = (pair & 0xf0) >> 8;
             state->c = pair & 0xf;
@@ -890,8 +890,8 @@ void Emulate8080Op(State8080* state)
         }
         case 0x09: // DAD B
         {
-            uint32_t pairHL = (state->h<<8) | (state->l);
-            uint32_t pairBC = (state->b<<8) | (state->c);
+            uint32_t pairHL = (state->h << 8) | (state->l);
+            uint32_t pairBC = (state->b << 8) | (state->c);
             pairHL = pairHL + pairBC;
             state->cc.cy = (pairHL > 0xff);
             state->h = (pairHL & 0xf0) >> 8;
@@ -899,7 +899,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x0B: // DCX B
         {
-            uint16_t pair = (state->b<<8) | (state->c);
+            uint16_t pair = (state->b << 8) | (state->c);
             pair = pair - 1;
             state->b = (pair & 0xf0) >> 8;
             state->c = pair & 0xf;
@@ -922,7 +922,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x13: // INX D
         {
-            uint16_t pair = (state->d<<8) | (state->e);
+            uint16_t pair = (state->d << 8) | (state->e);
             pair = pair + 1;
             state->d = (pair & 0xf0) >> 8;
             state->e = pair & 0xf;
@@ -945,8 +945,8 @@ void Emulate8080Op(State8080* state)
         }
         case 0x19: // DAD D
         {
-            uint32_t pairHL = (state->h<<8) | (state->l);
-            uint32_t pairDE = (state->d<<8) | (state->e);
+            uint32_t pairHL = (state->h << 8) | (state->l);
+            uint32_t pairDE = (state->d << 8) | (state->e);
             pairHL = pairHL + pairDE;
             state->cc.cy = (pairHL > 0xff);
             state->h = (pairHL & 0xf0) >> 8;
@@ -954,7 +954,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x1B: // DCX D
         {
-            uint16_t pair = (state->d<<8) | (state->e);
+            uint16_t pair = (state->d << 8) | (state->e);
             pair = pair - 1;
             state->b = (pair & 0xf0) >> 8;
             state->e = pair & 0xf;
@@ -977,7 +977,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x23: // INX H
         {
-            uint16_t pair = (state->h<<8) | (state->l);
+            uint16_t pair = (state->h << 8) | (state->l);
             pair = pair + 1;
             state->h = (pair & 0xf0) >> 8;
             state->l = pair & 0xf;
@@ -1000,7 +1000,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x29: // DAD H
         {
-            uint32_t pairHL = (state->h<<8) | (state->l);
+            uint32_t pairHL = (state->h << 8) | (state->l);
             pairHL = pairHL + pairHL;
             state->cc.cy = (pairHL > 0xff);
             state->h = (pairHL & 0xf0) >> 8;
@@ -1008,7 +1008,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x2B: // DCX H
         {
-            uint16_t pair = (state->h<<8) | (state->l);
+            uint16_t pair = (state->h << 8) | (state->l);
             pair = pair - 1;
             state->b = (pair & 0xf0) >> 8;
             state->l = pair & 0xf;
@@ -1031,14 +1031,14 @@ void Emulate8080Op(State8080* state)
         }
         case 0x33: // INX M
         {
-            uint16_t pair = (state->h<<8) | (state->l);
+            uint16_t pair = (state->h << 8) | (state->l);
             pair = pair + 1;
             state->h = (pair & 0xf0) >> 8;
             state->l = pair & 0xf;
         }
         case 0x34: // INR M
         {
-            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t offset = (state->h << 8) | (state->l);
             state->memory[offset] = state->memory[offset] + 1;
             state->cc.z = ((state->memory[offset]) == 0);
             state->cc.s = ((state->memory[offset] & 0x80) == 0x80);
@@ -1047,7 +1047,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x35: // DCR M
         {
-            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t offset = (state->h << 8) | (state->l);
             state->memory[offset] = state->memory[offset] - 1;
             state->cc.z = ((state->memory[offset]) == 0);
             state->cc.s = ((state->memory[offset] & 0x80) == 0x80);
@@ -1056,7 +1056,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x39: // DAD SP
         {
-            uint32_t pairHL = (state->h<<8) | (state->l);
+            uint32_t pairHL = (state->h << 8) | (state->l);
             pairHL = pairHL + (uint32_t) state->sp;
             state->cc.cy = (pairHL > 0xff);
             state->h = (pairHL & 0xf0) >> 8;
@@ -1187,7 +1187,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x86: // ADD M
         {
-            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t offset = (state->h << 8) | (state->l);
             uint16_t answer = (uint16_t) state->a + state->memory[offset];
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
@@ -1268,7 +1268,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x8E: // ADC M
         {
-            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t offset = (state->h << 8) | (state->l);
             uint16_t answer = (uint16_t) state->a + state->memory[offset] + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
@@ -1349,7 +1349,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x96: // SUB M
         {
-            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t offset = (state->h << 8) | (state->l);
             uint16_t answer = (uint16_t) state->a - state->memory[offset];
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
@@ -1430,7 +1430,7 @@ void Emulate8080Op(State8080* state)
         }
         case 0x9E: // SBB M
         {
-            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t offset = (state->h << 8) | (state->l);
             uint16_t answer = (uint16_t) state->a - (state->memory[offset] + state->cc.cy);
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
