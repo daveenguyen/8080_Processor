@@ -865,6 +865,225 @@ void Emulate8080Op(State8080* state)
             state->b = opcode[2];
             state->pc += 2; // Advance 2 more bytes
             break;
+        case 0x03: // INX B
+        {
+            uint16_t pair = (state->b<<8) | (state->c);
+            pair = pair + 1;
+            state->b = (pair & 0xf0) >> 8;
+            state->c = pair & 0xf;
+        }
+        case 0x04: // INR B
+        {
+            state->b = state->b + 1;
+            state->cc.z = ((state->b) == 0);
+            state->cc.s = ((state->b & 0x80) == 0x80);
+            state->cc.p = Parity(state->b);
+            state->cc.ac = ((state->b & 0xf) == 0xf);
+        }
+        case 0x05: // DCR B
+        {
+            state->b = state->b - 1;
+            state->cc.z = ((state->b) == 0);
+            state->cc.s = ((state->b & 0x80) == 0x80);
+            state->cc.p = Parity(state->b);
+            state->cc.ac = ((state->b & 0xf) == 0x0);
+        }
+        case 0x09: // DAD B
+        {
+            uint32_t pairHL = (state->h<<8) | (state->l);
+            uint32_t pairBC = (state->b<<8) | (state->c);
+            pairHL = pairHL + pairBC;
+            state->cc.cy = (pairHL > 0xff);
+            state->h = (pairHL & 0xf0) >> 8;
+            state->l = pairHL & 0xf;
+        }
+        case 0x0B: // DCX B
+        {
+            uint16_t pair = (state->b<<8) | (state->c);
+            pair = pair - 1;
+            state->b = (pair & 0xf0) >> 8;
+            state->c = pair & 0xf;
+        }
+        case 0x0C: // INR C
+        {
+            state->c = state->c + 1;
+            state->cc.z = ((state->c) == 0);
+            state->cc.s = ((state->c & 0x80) == 0x80);
+            state->cc.p = Parity(state->c);
+            state->cc.ac = ((state->c & 0xf) == 0xf);
+        }
+        case 0x0D: // DCR C
+        {
+            state->c = state->c - 1;
+            state->cc.z = ((state->c) == 0);
+            state->cc.s = ((state->c & 0x80) == 0x80);
+            state->cc.p = Parity(state->c);
+            state->cc.ac = ((state->c & 0xf) == 0x0);
+        }
+        case 0x13: // INX D
+        {
+            uint16_t pair = (state->d<<8) | (state->e);
+            pair = pair + 1;
+            state->d = (pair & 0xf0) >> 8;
+            state->e = pair & 0xf;
+        }
+        case 0x14: // INR D
+        {
+            state->d = state->d + 1;
+            state->cc.z = ((state->d) == 0);
+            state->cc.s = ((state->d & 0x80) == 0x80);
+            state->cc.p = Parity(state->d);
+            state->cc.ac = ((state->d & 0xf) == 0xf);
+        }
+        case 0x15: // DCR D
+        {
+            state->d = state->d - 1;
+            state->cc.z = ((state->d) == 0);
+            state->cc.s = ((state->d & 0x80) == 0x80);
+            state->cc.p = Parity(state->d);
+            state->cc.ac = ((state->d & 0xf) == 0x0);
+        }
+        case 0x19: // DAD D
+        {
+            uint32_t pairHL = (state->h<<8) | (state->l);
+            uint32_t pairDE = (state->d<<8) | (state->e);
+            pairHL = pairHL + pairDE;
+            state->cc.cy = (pairHL > 0xff);
+            state->h = (pairHL & 0xf0) >> 8;
+            state->l = pairHL & 0xf;
+        }
+        case 0x1B: // DCX D
+        {
+            uint16_t pair = (state->d<<8) | (state->e);
+            pair = pair - 1;
+            state->b = (pair & 0xf0) >> 8;
+            state->e = pair & 0xf;
+        }
+        case 0x1C: // INR E
+        {
+            state->e = state->e + 1;
+            state->cc.z = ((state->e) == 0);
+            state->cc.s = ((state->e & 0x80) == 0x80);
+            state->cc.p = Parity(state->e);
+            state->cc.ac = ((state->e & 0xf) == 0xf);
+        }
+        case 0x1D: // DCR E
+        {
+            state->e = state->e - 1;
+            state->cc.z = ((state->e) == 0);
+            state->cc.s = ((state->e & 0x80) == 0x80);
+            state->cc.p = Parity(state->e);
+            state->cc.ac = ((state->e & 0xf) == 0x0);
+        }
+        case 0x23: // INX H
+        {
+            uint16_t pair = (state->h<<8) | (state->l);
+            pair = pair + 1;
+            state->h = (pair & 0xf0) >> 8;
+            state->l = pair & 0xf;
+        }
+        case 0x24: // INR H
+        {
+            state->h = state->h + 1;
+            state->cc.z = ((state->h) == 0);
+            state->cc.s = ((state->h & 0x80) == 0x80);
+            state->cc.p = Parity(state->h);
+            state->cc.ac = ((state->h & 0xf) == 0xf);
+        }
+        case 0x25: // DCR H
+        {
+            state->h = state->h - 1;
+            state->cc.z = ((state->h) == 0);
+            state->cc.s = ((state->h & 0x80) == 0x80);
+            state->cc.p = Parity(state->h);
+            state->cc.ac = ((state->h & 0xf) == 0x0);
+        }
+        case 0x29: // DAD H
+        {
+            uint32_t pairHL = (state->h<<8) | (state->l);
+            pairHL = pairHL + pairHL;
+            state->cc.cy = (pairHL > 0xff);
+            state->h = (pairHL & 0xf0) >> 8;
+            state->l = pairHL & 0xf;
+        }
+        case 0x2B: // DCX H
+        {
+            uint16_t pair = (state->h<<8) | (state->l);
+            pair = pair - 1;
+            state->b = (pair & 0xf0) >> 8;
+            state->l = pair & 0xf;
+        }
+        case 0x2C: // INR L
+        {
+            state->l = state->l + 1;
+            state->cc.z = ((state->l) == 0);
+            state->cc.s = ((state->l & 0x80) == 0x80);
+            state->cc.p = Parity(state->l);
+            state->cc.ac = ((state->l & 0xf) == 0xf);
+        }
+        case 0x2D: // DCR L
+        {
+            state->l = state->l - 1;
+            state->cc.z = ((state->l) == 0);
+            state->cc.s = ((state->l & 0x80) == 0x80);
+            state->cc.p = Parity(state->l);
+            state->cc.ac = ((state->l & 0xf) == 0x0);
+        }
+        case 0x33: // INX M
+        {
+            uint16_t pair = (state->h<<8) | (state->l);
+            pair = pair + 1;
+            state->h = (pair & 0xf0) >> 8;
+            state->l = pair & 0xf;
+        }
+        case 0x34: // INR M
+        {
+            uint16_t offset = (state->h<<8) | (state->l);
+            state->memory[offset] = state->memory[offset] + 1;
+            state->cc.z = ((state->memory[offset]) == 0);
+            state->cc.s = ((state->memory[offset] & 0x80) == 0x80);
+            state->cc.p = Parity(state->memory[offset]);
+            state->cc.ac = ((state->memory[offset] & 0xf) == 0xf);
+        }
+        case 0x35: // DCR M
+        {
+            uint16_t offset = (state->h<<8) | (state->l);
+            state->memory[offset] = state->memory[offset] - 1;
+            state->cc.z = ((state->memory[offset]) == 0);
+            state->cc.s = ((state->memory[offset] & 0x80) == 0x80);
+            state->cc.p = Parity(state->memory[offset]);
+            state->cc.ac = ((state->memory[offset] & 0xf) == 0x0);
+        }
+        case 0x39: // DAD SP
+        {
+            uint32_t pairHL = (state->h<<8) | (state->l);
+            pairHL = pairHL + (uint32_t) state->sp;
+            state->cc.cy = (pairHL > 0xff);
+            state->h = (pairHL & 0xf0) >> 8;
+            state->l = pairHL & 0xf;
+        }
+        case 0x3B: // DCX SP
+        {
+            state->sp = state->sp - 1;
+            state->b = (state->sp & 0xf0) >> 8;
+            state->l = state->sp & 0xf;
+        }
+        case 0x3C: // INR A
+        {
+            state->a = state->a + 1;
+            state->cc.z = ((state->a) == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a);
+            state->cc.ac = ((state->a & 0xf) == 0xf);
+        }
+        case 0x3D: // DCR A
+        {
+            state->a = state->a - 1;
+            state->cc.z = ((state->a) == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a);
+            state->cc.ac = ((state->a & 0xf) == 0x0);
+        }
         /*....*/
         case 0x41: // MOV B, C
             state-> b = state->c;
