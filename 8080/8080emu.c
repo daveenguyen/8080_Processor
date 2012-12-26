@@ -1068,6 +1068,168 @@ void Emulate8080Op(State8080* state)
             state->cc.ac = (((state->a & 0xf) + (state->a & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
+        case 0x90: // SUB B
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->b;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x91: // SUB C
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->c;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x92: // SUB D
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->d;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->d) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x93: // SUB E
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->e;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->e) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x94: // SUB H
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->h;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->h) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x95: // SUB L
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->l;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->l) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x96: // SUB M
+        {
+            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t answer = (uint16_t) state->a - state->memory[offset];
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->memory[offset]) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x97: // SUB A
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) state->a;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->a) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x98: // SBB B
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->b + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->b + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x99: // SBB C
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->c + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x9A: // SBB D
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->d + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->d + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x9B: // SBB E
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->e + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->e + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x9C: // SBB H
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->h + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->h + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x9D: // SBB L
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->l + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->l + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x9E: // SBB M
+        {
+            uint16_t offset = (state->h<<8) | (state->l);
+            uint16_t answer = (uint16_t) state->a - (state->memory[offset] + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->memory[offset] + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0x9F: // SBB A
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) state->a + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->a + state->cc.cy) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
         /*....*/
         case 0xC6: // ADI byte
         {
@@ -1076,6 +1238,37 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (opcode[1] & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0xCE: // ACI byte
+        {
+            uint16_t answer = (uint16_t) state->a + (uint16_t) opcode[1] + state->cc.cy;
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (opcode[1] & 0xf) + state->cc.cy) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0xD6: // SUI byte
+        {
+            uint16_t answer = (uint16_t) state->a - (uint16_t) opcode[1];
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(opcode[1]) & 0xf)) > 0xf);
+            state->a = answer & 0xff;
+        }
+        case 0xDE: // SCI byte
+        {
+            uint16_t answer = (uint16_t) state->a - ((uint16_t) opcode[1] + state->cc.cy);
+            state->cc.z = ((answer & 0xff) == 0);
+            state->cc.s = ((answer & 0x80) == 0x80);
+            state->cc.cy = (answer > 0xff);
+            state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(opcode[1] + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         default:
