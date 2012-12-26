@@ -907,6 +907,12 @@ void Emulate8080Op(State8080* state)
             // Parity is handled by a subroutine
             state->cc.p = Parity(answer & 0xff);
 
+            // Auxiliary Carry
+            if ((state->a & 0xf) + (state->b & 0xf) > 0xf)
+                state->cc.ac = 1;
+            else
+                state->cc.ac = 0;
+
             state->a = answer & 0xff;
         }
         // The code for ADD can be condensed like this
@@ -914,45 +920,50 @@ void Emulate8080Op(State8080* state)
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->c;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->c & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x82: // ADD D
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->d;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->d & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x83: // ADD E
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->e;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->e & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x84: // ADD H
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->h;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->h & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x85: // ADD L
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->l;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->l & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x86: // ADD M
@@ -960,72 +971,80 @@ void Emulate8080Op(State8080* state)
             uint16_t offset = (state->h<<8) | (state->l);
             uint16_t answer = (uint16_t) state->a + state->memory[offset];
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->memory[offset] & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x87: // ADD A
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->a;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->a & 0xf)) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x88: // ADC B
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->b + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->b & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x89: // ADC C
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->c + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->c & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x8A: // ADC D
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->d + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->d & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x8B: // ADC E
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->e + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->e & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x8C: // ADC H
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->h + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->h & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x8D: // ADC L
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->l + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->l & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x8E: // ADC M
@@ -1033,18 +1052,20 @@ void Emulate8080Op(State8080* state)
             uint16_t offset = (state->h<<8) | (state->l);
             uint16_t answer = (uint16_t) state->a + state->memory[offset] + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->memory[offset] & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         case 0x8F: // ADC A
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) state->a + state->cc.cy;
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (state->a & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
         }
         /*....*/
@@ -1052,7 +1073,7 @@ void Emulate8080Op(State8080* state)
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) opcode[1];
             state->cc.z = ((answer & 0xff) == 0);
-            state->cc.s = (answer & 0x80);
+            state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
             state->cc.p = Parity(answer & 0xff);
             state->a = answer & 0xff;
