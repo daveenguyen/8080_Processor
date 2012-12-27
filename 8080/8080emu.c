@@ -1023,6 +1023,9 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->l);
             state->cc.ac = ((state->l & 0xf) == 0x0);
             break;
+        case 0x2F: // CMA (not)
+            state->a = ~state->a;
+            break;
         case 0x33: // INX M
         {
             uint16_t pair = (state->h << 8) | (state->l);
@@ -1475,6 +1478,65 @@ void Emulate8080Op(State8080* state)
             state->a = answer & 0xff;
             break;
         }
+        case 0xA0: // ANA B
+            state->a = state->a & state->b;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA1: // ANA C
+            state->a = state->a & state->c;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA2: // ANA D
+            state->a = state->a & state->d;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA3: // ANA E
+            state->a = state->a & state->e;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA4: // ANA H
+            state->a = state->a & state->h;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA5: // ANA L
+            state->a = state->a & state->l;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA6: // ANA M
+        {
+            uint16_t offset = (state->h << 8) | (state->l);
+            state->a = state->a & state->memory[offset];
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        }
+        case 0xA7: // ANA A
+            state->a = state->a & state->a;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
         /*....*/
         case 0xC0: // RNZ
             if (state->cc.z == 0)
@@ -1710,6 +1772,17 @@ void Emulate8080Op(State8080* state)
             }
             else
                 state->pc += 2;
+            break;
+        }
+        case 0xE6: // ANI byte
+        {
+            uint8_t x = state-> a & opcode[1];
+            state->cc.z = (x == 0);
+            state->cc.s = ((x & 0x80) == 0x80);
+            state->cc.p = Parity(x, 8);
+            state->cc.cy = 0; // Data book says ANI clears CY
+            state->a = x;
+            state->pc++; // for the data byte
             break;
         }
         case 0xE7: // RST 4
