@@ -1484,6 +1484,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA1: // ANA C
             state->a = state->a & state->c;
@@ -1491,6 +1492,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA2: // ANA D
             state->a = state->a & state->d;
@@ -1498,6 +1500,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA3: // ANA E
             state->a = state->a & state->e;
@@ -1505,6 +1508,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA4: // ANA H
             state->a = state->a & state->h;
@@ -1512,6 +1516,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA5: // ANA L
             state->a = state->a & state->l;
@@ -1519,6 +1524,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA6: // ANA M
         {
@@ -1528,6 +1534,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         }
         case 0xA7: // ANA A
@@ -1536,6 +1543,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA8: // XRA B
             state->a = state->a ^ state->b;
@@ -1543,6 +1551,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xA9: // XRA C
             state->a = state->a ^ state->c;
@@ -1550,6 +1559,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xAA: // XRA D
             state->a = state->a ^ state->d;
@@ -1557,6 +1567,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xAB: // XRA E
             state->a = state->a ^ state->e;
@@ -1564,6 +1575,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xAC: // XRA H
             state->a = state->a ^ state->h;
@@ -1571,6 +1583,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xAD: // XRA L
             state->a = state->a ^ state->l;
@@ -1578,6 +1591,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xAE: // XRA M
         {
@@ -1587,6 +1601,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         }
         case 0xAF: // XRA A
@@ -1595,6 +1610,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB0: // ORA B
             state->a = state->a | state->b;
@@ -1602,6 +1618,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB1: // ORA C
             state->a = state->a | state->c;
@@ -1609,6 +1626,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB2: // ORA D
             state->a = state->a | state->d;
@@ -1616,6 +1634,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB3: // ORA E
             state->a = state->a | state->e;
@@ -1623,6 +1642,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB4: // ORA H
             state->a = state->a | state->h;
@@ -1630,6 +1650,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB5: // ORA L
             state->a = state->a | state->l;
@@ -1637,6 +1658,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         case 0xB6: // ORA M
         {
@@ -1646,6 +1668,7 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
         }
         case 0xB7: // ORA A
@@ -1654,7 +1677,89 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
             break;
+        case 0xB8: // CMP B
+        {
+            uint8_t res = state->a - state->b;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xB9: // CMP C
+        {
+            uint8_t res = state->a - state->c;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xBA: // CMP D
+        {
+            uint8_t res = state->a - state->d;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xBB: // CMP E
+        {
+            uint8_t res = state->a - state->e;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xBC: // CMP H
+        {
+            uint8_t res = state->a - state->h;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xBD: // CMP L
+        {
+            uint8_t res = state->a - state->l;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xBE: // CMP M
+        {
+            uint16_t offset = (state->h << 8) | (state->l);
+            uint8_t res = state->a - state->memory[offset];
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
+        case 0xBF: // CMP A
+        {
+            uint8_t res = state->a - state->a;
+            state->cc.z = (res == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.p = Parity(res, 8);
+            state->cc.cy = 0; // clears CY
+            state->cc.ac = 0; // clears AC
+            break;
+        }
         /*....*/
         case 0xC0: // RNZ
             if (state->cc.z == 0)
