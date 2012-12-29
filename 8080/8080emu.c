@@ -1537,6 +1537,65 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
             break;
+        case 0xA8: // XRA B
+            state->a = state->a ^ state->b;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xA9: // XRA C
+            state->a = state->a ^ state->c;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xAA: // XRA D
+            state->a = state->a ^ state->d;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xAB: // XRA E
+            state->a = state->a ^ state->e;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xAC: // XRA H
+            state->a = state->a ^ state->h;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xAD: // XRA L
+            state->a = state->a ^ state->l;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xAE: // XRA M
+        {
+            uint16_t offset = (state->h << 8) | (state->l);
+            state->a = state->a ^ state->memory[offset];
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        }
+        case 0xAF: // XRA A
+            state->a = state->a ^ state->a;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
         case 0xB0: // ORA B
             state->a = state->a | state->b;
             state->cc.z = (state->a == 0);
@@ -1882,6 +1941,17 @@ void Emulate8080Op(State8080* state)
             }
             else
                 state->pc += 2;
+            break;
+        }
+        case 0xEE: // XRI byte
+        {
+            uint8_t x = state-> a ^ opcode[1];
+            state->cc.z = (x == 0);
+            state->cc.s = ((x & 0x80) == 0x80);
+            state->cc.p = Parity(x, 8);
+            state->cc.cy = 0; // Data book says ANI clears CY
+            state->a = x;
+            state->pc++; // for the data byte
             break;
         }
         case 0xEF: // RST 5
