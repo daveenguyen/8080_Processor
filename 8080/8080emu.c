@@ -1537,6 +1537,65 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->a, 8);
             state->cc.cy = 0; // clears CY
             break;
+        case 0xB0: // ORA B
+            state->a = state->a | state->b;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xB1: // ORA C
+            state->a = state->a | state->c;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xB2: // ORA D
+            state->a = state->a | state->d;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xB3: // ORA E
+            state->a = state->a | state->e;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xB4: // ORA H
+            state->a = state->a | state->h;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xB5: // ORA L
+            state->a = state->a | state->l;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        case 0xB6: // ORA M
+        {
+            uint16_t offset = (state->h << 8) | (state->l);
+            state->a = state->a | state->memory[offset];
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
+        }
+        case 0xB7: // ORA A
+            state->a = state->a | state->a;
+            state->cc.z = (state->a == 0);
+            state->cc.s = ((state->a & 0x80) == 0x80);
+            state->cc.p = Parity(state->a, 8);
+            state->cc.cy = 0; // clears CY
+            break;
         /*....*/
         case 0xC0: // RNZ
             if (state->cc.z == 0)
@@ -1860,6 +1919,17 @@ void Emulate8080Op(State8080* state)
             }
             else
                 state->pc += 2;
+            break;
+        }
+        case 0xF6: // ORI byte
+        {
+            uint8_t x = state-> a | opcode[1];
+            state->cc.z = (x == 0);
+            state->cc.s = ((x & 0x80) == 0x80);
+            state->cc.p = Parity(x, 8);
+            state->cc.cy = 0; // Data book says ANI clears CY
+            state->a = x;
+            state->pc++; // for the data byte
             break;
         }
         case 0xF7: // RST 6
