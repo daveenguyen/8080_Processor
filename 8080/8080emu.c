@@ -1688,6 +1688,7 @@ void Emulate8080Op(State8080* state)
             state->cc.cy = 0; // clears CY
             state->cc.ac = 0; // clears AC
             break;
+            // note page 67 of pdf to implement carry of cmp ops
         }
         case 0xB9: // CMP C
         {
@@ -2003,7 +2004,8 @@ void Emulate8080Op(State8080* state)
             state->cc.z = (x == 0);
             state->cc.s = ((x & 0x80) == 0x80);
             state->cc.p = Parity(x, 8);
-            state->cc.cy = 0; // Data book says ANI clears CY
+            state->cc.cy = 0; // Data book says op clears carry flags
+            state->cc.ac = 0;
             state->a = x;
             state->pc++; // for the data byte
             break;
@@ -2054,7 +2056,8 @@ void Emulate8080Op(State8080* state)
             state->cc.z = (x == 0);
             state->cc.s = ((x & 0x80) == 0x80);
             state->cc.p = Parity(x, 8);
-            state->cc.cy = 0; // Data book says ANI clears CY
+            state->cc.cy = 0; // Data book says op clears carry flags
+            state->cc.ac = 0;
             state->a = x;
             state->pc++; // for the data byte
             break;
@@ -2102,7 +2105,8 @@ void Emulate8080Op(State8080* state)
             state->cc.z = (x == 0);
             state->cc.s = ((x & 0x80) == 0x80);
             state->cc.p = Parity(x, 8);
-            state->cc.cy = 0; // Data book says ANI clears CY
+            state->cc.cy = 0; // Data book says op clears carry flags
+            state->cc.ac = 0;
             state->a = x;
             state->pc++; // for the data byte
             break;
@@ -2145,6 +2149,17 @@ void Emulate8080Op(State8080* state)
             }
             else
                 state->pc += 2;
+            break;
+        }
+        case 0xFE: // CPI byte
+        {
+            uint8_t x = state-> a - opcode[1];
+            state->cc.z = (x == 0);
+            state->cc.s = ((x & 0x80) == 0x80);
+            state->cc.p = Parity(x, 8);
+            state->cc.cy = 0; // Data book says op clears carry flags
+            state->cc.ac = 0;
+            state->pc++; // for the data byte
             break;
         }
         case 0xFF: // RST 7
