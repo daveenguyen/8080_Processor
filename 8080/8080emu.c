@@ -1681,84 +1681,84 @@ void Emulate8080Op(State8080* state)
             break;
         case 0xB8: // CMP B
         {
-            uint8_t res = state->a - state->b;
-            state->cc.z = (res == 0);
+            // Like SUB B but without storing
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->b;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
-            // note page 67 of pdf to implement carry of cmp ops
         }
         case 0xB9: // CMP C
         {
-            uint8_t res = state->a - state->c;
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->c;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         case 0xBA: // CMP D
         {
-            uint8_t res = state->a - state->d;
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->d;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         case 0xBB: // CMP E
         {
-            uint8_t res = state->a - state->e;
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->e;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         case 0xBC: // CMP H
         {
-            uint8_t res = state->a - state->h;
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->h;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         case 0xBD: // CMP L
         {
-            uint8_t res = state->a - state->l;
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->l;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         case 0xBE: // CMP M
         {
             uint16_t offset = (state->h << 8) | (state->l);
-            uint8_t res = state->a - state->memory[offset];
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->memory[offset];
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         case 0xBF: // CMP A
         {
-            uint8_t res = state->a - state->a;
-            state->cc.z = (res == 0);
+            uint16_t res = (uint16_t) state->a - (uint16_t) state->l;
+            state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
-            state->cc.p = Parity(res, 8);
-            state->cc.cy = 0; // clears CY
-            state->cc.ac = 0; // clears AC
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
         /*....*/
@@ -2153,12 +2153,12 @@ void Emulate8080Op(State8080* state)
         }
         case 0xFE: // CPI byte
         {
-            uint8_t x = state-> a - opcode[1];
-            state->cc.z = (x == 0);
-            state->cc.s = ((x & 0x80) == 0x80);
-            state->cc.p = Parity(x, 8);
-            state->cc.cy = 0; // Data book says op clears carry flags
-            state->cc.ac = 0;
+            uint16_t res = (uint16_t) state->a - (uint16_t) opcode[1];
+            state->cc.z = ((res & 0xff) == 0);
+            state->cc.s = ((res & 0x80) == 0x80);
+            state->cc.cy = (res > 0xff);
+            state->cc.p = Parity(res & 0xff);
+            state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             state->pc++; // for the data byte
             break;
         }
