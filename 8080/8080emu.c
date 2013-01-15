@@ -1054,6 +1054,9 @@ void Emulate8080Op(State8080* state)
             state->cc.ac = ((state->memory[offset] & 0xf) == 0x0);
             break;
         }
+        case 0x37: // STC
+            state->cc.cy = 1;
+            break;
         case 0x39: // DAD SP
         {
             uint32_t pairHL = (state->h << 8) | (state->l);
@@ -1081,6 +1084,9 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a);
             state->cc.ac = ((state->a & 0xf) == 0x0);
+            break;
+        case 0x3F: // CMC
+            state->cc.cy = !state->cc.cy;
             break;
         case 0x41: // MOV B, C
             state->b = state->c;
