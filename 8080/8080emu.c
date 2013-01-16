@@ -888,6 +888,10 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->b);
             state->cc.ac = ((state->b & 0xf) == 0x0);
             break;
+        case 0x06: // MVI B, byte
+            state->b = opcode[1];
+            state->pc++; // for the data byte
+            break;
         case 0x09: // DAD B
         {
             uint32_t pairHL = (state->h << 8) | (state->l);
@@ -920,6 +924,10 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->c);
             state->cc.ac = ((state->c & 0xf) == 0x0);
             break;
+        case 0x0E: // MVI C, byte
+            state->c = opcode[1];
+            state->pc++; // for the data byte
+            break;
         case 0x13: // INX D
         {
             uint16_t pair = (state->d << 8) | (state->e);
@@ -941,6 +949,10 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->d & 0x80) == 0x80);
             state->cc.p = Parity(state->d);
             state->cc.ac = ((state->d & 0xf) == 0x0);
+            break;
+        case 0x16: // MVI D, byte
+            state->d = opcode[1];
+            state->pc++; // for the data byte
             break;
         case 0x19: // DAD D
         {
@@ -974,6 +986,10 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->e);
             state->cc.ac = ((state->e & 0xf) == 0x0);
             break;
+        case 0x1E: // MVI E, byte
+            state->e = opcode[1];
+            state->pc++; // for the data byte
+            break;
         case 0x23: // INX H
         {
             uint16_t pair = (state->h << 8) | (state->l);
@@ -994,6 +1010,10 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->h & 0x80) == 0x80);
             state->cc.p = Parity(state->h);
             state->cc.ac = ((state->h & 0xf) == 0x0);
+            break;
+        case 0x26: // MVI H, byte
+            state->h = opcode[1];
+            state->pc++; // for the data byte
             break;
         case 0x29: // DAD H
         {
@@ -1023,6 +1043,10 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->l & 0x80) == 0x80);
             state->cc.p = Parity(state->l);
             state->cc.ac = ((state->l & 0xf) == 0x0);
+            break;
+        case 0x2E: // MVI l, byte
+            state->l = opcode[1];
+            state->pc++; // for the data byte
             break;
         case 0x2F: // CMA (not)
             state->a = ~state->a;
@@ -1055,6 +1079,13 @@ void Emulate8080Op(State8080* state)
             state->cc.ac = ((state->memory[offset] & 0xf) == 0x0);
             break;
         }
+        case 0x36: // MVI M, byte
+        {
+            uint16_t offset = (state->h << 8) | (state->l);
+            state->memory[offset] = opcode[1];
+            state->pc++; // for the data byte
+            break;
+        }
         case 0x37: // STC
             state->cc.cy = 1;
             break;
@@ -1085,6 +1116,10 @@ void Emulate8080Op(State8080* state)
             state->cc.s = ((state->a & 0x80) == 0x80);
             state->cc.p = Parity(state->a);
             state->cc.ac = ((state->a & 0xf) == 0x0);
+            break;
+        case 0x36: // MVI A, byte
+            state->a = opcode[1];
+            state->pc++; // for the data byte
             break;
         case 0x3F: // CMC
             state->cc.cy = !state->cc.cy;
