@@ -892,6 +892,12 @@ void Emulate8080Op(State8080* state)
             state->b = opcode[1];
             state->pc++; // for the data byte
             break;
+        case 0x07: // RLC
+        {
+            uint8_t x = state->a;
+            state-> a = ((x << 1) | (x & 0x80) >> 7);
+            state->cc.cy = ((x & 0x80) == 0x80);
+        }
         case 0x09: // DAD B
         {
             uint32_t pairHL = (state->h << 8) | (state->l);
@@ -928,6 +934,12 @@ void Emulate8080Op(State8080* state)
             state->c = opcode[1];
             state->pc++; // for the data byte
             break;
+        case 0x0F: // RRC
+        {
+            uint8_t x = state->a;
+            state-> a = ((x & 1) << 7 | (x >> 1));
+            state->cc.cy = ((x & 1) == 1);
+        }
         case 0x13: // INX D
         {
             uint16_t pair = (state->d << 8) | (state->e);
@@ -954,6 +966,12 @@ void Emulate8080Op(State8080* state)
             state->d = opcode[1];
             state->pc++; // for the data byte
             break;
+        case 0x17: // RAL
+        {
+            uint8_t x = state->a;
+            state-> a = ((x << 1) | state->cc.cy);
+            state->cc.cy = ((x & 0x80) == 0x80);
+        }
         case 0x19: // DAD D
         {
             uint32_t pairHL = (state->h << 8) | (state->l);
@@ -990,6 +1008,12 @@ void Emulate8080Op(State8080* state)
             state->e = opcode[1];
             state->pc++; // for the data byte
             break;
+        case 0x1F: // RAR
+        {
+            uint8_t x = state->a;
+            state-> a = ((state->cc.cy << 7) | (x >> 1));
+            state->cc.cy = ((x & 1) == 1);
+        }
         case 0x23: // INX H
         {
             uint16_t pair = (state->h << 8) | (state->l);
