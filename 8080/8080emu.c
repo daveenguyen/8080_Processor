@@ -2425,6 +2425,16 @@ void Emulate8080Op(State8080* state)
                 // branch not taken
                 state->pc += 2;
             break;
+        case 0xEB: // XCHG
+        {
+            uint8_t swap = state->l;
+            state->l = state->e;
+            state->e = swap;
+
+            swap = state->h;
+            state->h = state->d;
+            state->d = swap;
+        }
         case 0xEC: // CPE address
         {
             if (state->cc.p == 1)
