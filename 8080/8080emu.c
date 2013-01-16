@@ -864,11 +864,12 @@ void UnimplementedInstruction(State8080* state)
     exit(1);
 }
 
-void Emulate8080Op(State8080* state)
+int Emulate8080Op(State8080* state)
 {
     unsigned char *opcode = &state->memory[state->pc];
     Disassemble8080Op(state->memory, state->pc);
 
+    state->pc+=1; // for the opcode
     switch(*opcode)
     {
         case 0x00: // NOP
@@ -2616,16 +2617,53 @@ void Emulate8080Op(State8080* state)
             UnimplementedInstruction(state);
             break;
     }
-    state->pc+=1; // for the opcode
     /* print out processor state */
     printf("\tC=%d,P=%d,S=%d,Z=%d\n", state->cc.cy, state->cc.p,
            state->cc.s, state->cc.z);
     printf("\tA $%02x B $%02x C $%02x D $%02x E $%02x H $%02x L $%02x SP %04x\n",
             state->a, state->b, state->c, state->d,
             state->e, state->h, state->l, state->sp);
+    return 0;
+}
+
+void ReadFileIntoMemoryAt(State8080* state, char* filename, uint32_t offset)
+{
+    FILE *f = fopen(filename, "rb");
+    if (f==NULL)
+    {
+        printf("error: Could not open %s\n", filename);
+        exit(1);
+    }
+    fseek(f, 0L, SEEK_END);
+    int fsize = ftell(f);
+    fseek(f, 0L, SEEK_SET);
+
+    uint8_t *buffer = &state->memory[offset];
+    fread(buffer, fsize, 1, f);
+    fclose(f);
+}
+
+State8080* Init8080(void)
+{
+    State8080* state = calloc(1,sizeof(State8080));
+    state->memory = malloc(0x10000); //16K
+    return state;
 }
 
 int main (int argc, char**argv)
 {
+    int done=0;
+    int vblankcycles = 0;
+    State8080* state = Init8080();
+
+    ReadFileIntoMemoryAt(state, "invaders.h", 0);
+    ReadFileIntoMemoryAt(state, "invaders.g", 0x800);
+    ReadFileIntoMemoryAt(state, "invaders.f", 0x1000);
+    ReadFileIntoMemoryAt(state, "invaders.e", 0x1800);
+
+    while (done == 0)
+    {
+        done = Emulate8080Op(state);
+    }
     return 0;
 }
