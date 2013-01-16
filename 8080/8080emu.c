@@ -1113,6 +1113,13 @@ void Emulate8080Op(State8080* state)
             state->sp = (opcode[2] << 8) | (opcode[1]);
             state->pc += 2; // Advance 2 more bytes
             break;
+        case 0x32: // STA adr
+        {
+            uint16_t adr = (opcode[2] << 8) | (opcode[1]);
+            state->memory[adr] = state->a;
+            state->pc += 2;
+            break;
+        }
         case 0x33: // INX M
         {
             uint16_t pair = (state->h << 8) | (state->l);
@@ -1158,6 +1165,13 @@ void Emulate8080Op(State8080* state)
             state->cc.cy = (pairHL > 0xff);
             state->h = (pairHL & 0xf0) >> 8;
             state->l = pairHL & 0xf;
+            break;
+        }
+        case 0x3A: // LDA adr
+        {
+            uint16_t adr = (opcode[2] << 8) | (opcode[1]);
+            state->a = state->memory[adr];
+            state->pc += 2;
             break;
         }
         case 0x3B: // DCX SP
