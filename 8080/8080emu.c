@@ -1777,6 +1777,11 @@ void Emulate8080Op(State8080* state)
                 state->sp += 2;
             }
             break;
+        case 0xC1: // POP B
+            state->c = state->memory[state->sp];
+            state->b = state->memory[state->sp+1];
+            state->sp += 2;
+            break;
         case 0xC2: // JNZ address
             if (state->cc.z == 0)
                 state->pc = (opcode[2] << 8) | opcode[1];
@@ -1801,6 +1806,11 @@ void Emulate8080Op(State8080* state)
                 state->pc += 2;
             break;
         }
+        case 0xC5: // PUSH B
+            state->memory[state->sp-1] = state->b;
+            state->memory[state->sp-2] = state->c;
+            state->sp = state->sp - 2;
+            break;
         case 0xC6: // ADI byte
         {
             uint16_t answer = (uint16_t) state->a + (uint16_t) opcode[1];
@@ -1889,6 +1899,11 @@ void Emulate8080Op(State8080* state)
                 state->sp += 2;
             }
             break;
+        case 0xD1: // POP D
+            state->e = state->memory[state->sp];
+            state->d = state->memory[state->sp+1];
+            state->sp += 2;
+            break;
         case 0xD2: // JNC address
             if (state->cc.cy == 0)
                 state->pc = (opcode[2] << 8) | opcode[1];
@@ -1914,6 +1929,11 @@ void Emulate8080Op(State8080* state)
                 state->pc += 2;
             break;
         }
+        case 0xD5: // PUSH D
+            state->memory[state->sp-1] = state->d;
+            state->memory[state->sp-2] = state->e;
+            state->sp = state->sp - 2;
+            break;
         case 0xD6: // SUI byte
         {
             uint16_t answer = (uint16_t) state->a - (uint16_t) opcode[1];
@@ -1993,6 +2013,11 @@ void Emulate8080Op(State8080* state)
                 state->sp += 2;
             }
             break;
+        case 0xE1: // POP H
+            state->l = state->memory[state->sp];
+            state->h = state->memory[state->sp+1];
+            state->sp += 2;
+            break;
         case 0xE2: // JPO address
             if (state->cc.p == 0)
                 state->pc = (opcode[2] << 8) | opcode[1];
@@ -2014,6 +2039,11 @@ void Emulate8080Op(State8080* state)
                 state->pc += 2;
             break;
         }
+        case 0xE5: // PUSH H
+            state->memory[state->sp-1] = state->h;
+            state->memory[state->sp-2] = state->l;
+            state->sp = state->sp - 2;
+            break;
         case 0xE6: // ANI byte
         {
             uint8_t x = state-> a & opcode[1];
@@ -2094,6 +2124,18 @@ void Emulate8080Op(State8080* state)
                 state->sp += 2;
             }
             break;
+        case 0xF1: // POP PSW
+        {
+            state->a = state->memory[state->sp+1];
+            uint8_t psw = state->memory[state->sp];
+            state->cc.z = ((psw & 0x01) == 0x01);
+            state->cc.s = ((psw & 0x02) == 0x02);
+            state->cc.p = ((psw & 0x04) == 0x04);
+            state->cc.cy = ((psw & 0x08) == 0x08);
+            state->cc.ac = ((psw & 0x10) == 0x10);
+            state->sp += 2;
+            break;
+        }
         case 0xF2: // JP address
             if (state->cc.s == 0)
                 state->pc = (opcode[2] << 8) | opcode[1];
@@ -2116,6 +2158,18 @@ void Emulate8080Op(State8080* state)
             }
             else
                 state->pc += 2;
+            break;
+        }
+        case 0xF5: // PUSH PSW
+        {
+            state->memory[state->sp-1] = state->a;
+            uint8_t psw = (state->cc.z  |
+                           state->cc.s  << 1 |
+                           state->cc.p  << 2 |
+                           state->cc.cy << 3 |
+                           state->cc.ac << 4 );
+            state->memory[state->sp-2] = psw;
+            state->sp = state->sp - 2;
             break;
         }
         case 0xF6: // ORI byte
