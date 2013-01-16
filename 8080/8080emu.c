@@ -1193,7 +1193,7 @@ void Emulate8080Op(State8080* state)
             state->cc.p = Parity(state->a);
             state->cc.ac = ((state->a & 0xf) == 0x0);
             break;
-        case 0x36: // MVI A, byte
+        case 0x3E: // MVI A, byte
             state->a = opcode[1];
             state->pc++; // for the data byte
             break;
@@ -2611,7 +2611,6 @@ void Emulate8080Op(State8080* state)
     printf("\tA $%02x B $%02x C $%02x D $%02x E $%02x H $%02x L $%02x SP %04x\n",
             state->a, state->b, state->c, state->d,
             state->e, state->h, state->l, state->sp);
-}
 }
 
 int main (int argc, char**argv)
