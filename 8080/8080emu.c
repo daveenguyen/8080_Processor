@@ -2025,6 +2025,16 @@ void Emulate8080Op(State8080* state)
                 // branch not taken
                 state->pc += 2;
             break;
+        case 0xE3: // XTHL
+        {
+            uint8_t swap = state->l;
+            state->l = state->memory[state->sp];
+            state->memory[state->sp] = swap;
+
+            swap = state->h;
+            state->h = state->memory[state->sp+1];
+            state->memory[state->sp+1] = swap;
+        }
         case 0xE4: // CPO address
         {
             if (state->cc.p == 0)
