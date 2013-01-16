@@ -889,8 +889,8 @@ int Emulate8080Op(State8080* state)
         {
             uint16_t pair = (state->b << 8) | (state->c);
             pair = pair + 1;
-            state->b = (pair & 0xf0) >> 8;
-            state->c = pair & 0xf;
+            state->b = (pair & 0xff00) >> 8;
+            state->c = pair & 0xff;
             break;
         }
         case 0x04: // INR B
@@ -916,6 +916,7 @@ int Emulate8080Op(State8080* state)
             uint8_t x = state->a;
             state-> a = ((x << 1) | (x & 0x80) >> 7);
             state->cc.cy = ((x & 0x80) == 0x80);
+            break;
         }
         case 0x09: // DAD B
         {
@@ -923,8 +924,8 @@ int Emulate8080Op(State8080* state)
             uint32_t pairBC = (state->b << 8) | (state->c);
             pairHL = pairHL + pairBC;
             state->cc.cy = (pairHL > 0xff);
-            state->h = (pairHL & 0xf0) >> 8;
-            state->l = pairHL & 0xf;
+            state->h = (pairHL & 0xff00) >> 8;
+            state->l = pairHL & 0xff;
             break;
         }
         case 0x0A: // LDAX B
@@ -937,8 +938,8 @@ int Emulate8080Op(State8080* state)
         {
             uint16_t pair = (state->b << 8) | (state->c);
             pair = pair - 1;
-            state->b = (pair & 0xf0) >> 8;
-            state->c = pair & 0xf;
+            state->b = (pair & 0xff00) >> 8;
+            state->c = pair & 0xff;
             break;
         }
         case 0x0C: // INR C
@@ -964,6 +965,7 @@ int Emulate8080Op(State8080* state)
             uint8_t x = state->a;
             state-> a = ((x & 1) << 7 | (x >> 1));
             state->cc.cy = ((x & 1) == 1);
+            break;
         }
         case 0x11: // LXI D, word
             state->e = opcode[1];
@@ -980,8 +982,8 @@ int Emulate8080Op(State8080* state)
         {
             uint16_t pair = (state->d << 8) | (state->e);
             pair = pair + 1;
-            state->d = (pair & 0xf0) >> 8;
-            state->e = pair & 0xf;
+            state->d = (pair & 0xff00) >> 8;
+            state->e = pair & 0xff;
             break;
         }
         case 0x14: // INR D
@@ -1007,6 +1009,7 @@ int Emulate8080Op(State8080* state)
             uint8_t x = state->a;
             state-> a = ((x << 1) | state->cc.cy);
             state->cc.cy = ((x & 0x80) == 0x80);
+            break;
         }
         case 0x19: // DAD D
         {
@@ -1014,8 +1017,8 @@ int Emulate8080Op(State8080* state)
             uint32_t pairDE = (state->d << 8) | (state->e);
             pairHL = pairHL + pairDE;
             state->cc.cy = (pairHL > 0xff);
-            state->h = (pairHL & 0xf0) >> 8;
-            state->l = pairHL & 0xf;
+            state->h = (pairHL & 0xff00) >> 8;
+            state->l = pairHL & 0xff;
             break;
         }
         case 0x1A: // LDAX D
@@ -1028,8 +1031,8 @@ int Emulate8080Op(State8080* state)
         {
             uint16_t pair = (state->d << 8) | (state->e);
             pair = pair - 1;
-            state->b = (pair & 0xf0) >> 8;
-            state->e = pair & 0xf;
+            state->b = (pair & 0xff00) >> 8;
+            state->e = pair & 0xff;
             break;
         }
         case 0x1C: // INR E
@@ -1055,6 +1058,7 @@ int Emulate8080Op(State8080* state)
             uint8_t x = state->a;
             state-> a = ((state->cc.cy << 7) | (x >> 1));
             state->cc.cy = ((x & 1) == 1);
+            break;
         }
         case 0x21: // LXI H, word
             state->l = opcode[1];
@@ -1065,8 +1069,9 @@ int Emulate8080Op(State8080* state)
         {
             uint16_t pair = (state->h << 8) | (state->l);
             pair = pair + 1;
-            state->h = (pair & 0xf0) >> 8;
-            state->l = pair & 0xf;
+            state->h = (pair & 0xff00) >> 8;
+            state->l = pair & 0xff;
+            break;
         }
         case 0x24: // INR H
             state->h = state->h + 1;
@@ -1091,15 +1096,17 @@ int Emulate8080Op(State8080* state)
             uint32_t pairHL = (state->h << 8) | (state->l);
             pairHL = pairHL + pairHL;
             state->cc.cy = (pairHL > 0xff);
-            state->h = (pairHL & 0xf0) >> 8;
-            state->l = pairHL & 0xf;
+            state->h = (pairHL & 0xff00) >> 8;
+            state->l = pairHL & 0xff;
+            break;
         }
         case 0x2B: // DCX H
         {
             uint16_t pair = (state->h << 8) | (state->l);
             pair = pair - 1;
-            state->b = (pair & 0xf0) >> 8;
-            state->l = pair & 0xf;
+            state->b = (pair & 0xff00) >> 8;
+            state->l = pair & 0xff;
+            break;
         }
         case 0x2C: // INR L
             state->l = state->l + 1;
@@ -1137,8 +1144,8 @@ int Emulate8080Op(State8080* state)
         {
             uint16_t pair = (state->h << 8) | (state->l);
             pair = pair + 1;
-            state->h = (pair & 0xf0) >> 8;
-            state->l = pair & 0xf;
+            state->h = (pair & 0xff00) >> 8;
+            state->l = pair & 0xff;
             break;
         }
         case 0x34: // INR M
@@ -1176,8 +1183,8 @@ int Emulate8080Op(State8080* state)
             uint32_t pairHL = (state->h << 8) | (state->l);
             pairHL = pairHL + (uint32_t) state->sp;
             state->cc.cy = (pairHL > 0xff);
-            state->h = (pairHL & 0xf0) >> 8;
-            state->l = pairHL & 0xf;
+            state->h = (pairHL & 0xff00) >> 8;
+            state->l = pairHL & 0xff;
             break;
         }
         case 0x3A: // LDA adr
@@ -1189,8 +1196,8 @@ int Emulate8080Op(State8080* state)
         }
         case 0x3B: // DCX SP
             state->sp = state->sp - 1;
-            state->b = (state->sp & 0xf0) >> 8;
-            state->l = state->sp & 0xf;
+            state->b = (state->sp & 0xff00) >> 8;
+            state->l = state->sp & 0xff;
             break;
         case 0x3C: // INR A
             state->a = state->a + 1;
@@ -2380,6 +2387,7 @@ int Emulate8080Op(State8080* state)
             swap = state->h;
             state->h = state->memory[state->sp+1];
             state->memory[state->sp+1] = swap;
+            break;
         }
         case 0xE4: // CPO address
         {
@@ -2447,6 +2455,7 @@ int Emulate8080Op(State8080* state)
             swap = state->h;
             state->h = state->d;
             state->d = swap;
+            break;
         }
         case 0xEC: // CPE address
         {
