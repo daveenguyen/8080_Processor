@@ -1098,6 +1098,8 @@ void Emulate8080Op(State8080* state)
             state->b = state->e;
             break;
         /*....*/
+        case 0x76: // HLT
+            exit(0);
         case 0x80: // ADD B
         {
             // do math with higher precision so we can capture the
@@ -2091,6 +2093,9 @@ void Emulate8080Op(State8080* state)
                 // branch not taken
                 state->pc += 2;
             break;
+        case 0xF3: // DI
+            state->int_enable = 0;
+            break;
         case 0xF4: // CP address
         {
             if (state->cc.s == 0)
@@ -2142,6 +2147,9 @@ void Emulate8080Op(State8080* state)
             else
                 // branch not taken
                 state->pc += 2;
+            break;
+        case 0xFB: // EI
+            state->int_enable = 1;
             break;
         case 0xFC: // CM address
         {
