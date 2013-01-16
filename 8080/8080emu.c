@@ -27,6 +27,18 @@ typedef struct State8080 {
     uint8_t     int_enable;
 } State8080;
 
+int Parity(int x, int size)
+{
+    int i;
+    int p = 0;
+    x = (x & ((1<<size)-1));
+    for (i=0; i<size; i++)
+    {
+        if (x & 0x1) p++;
+        x = x >> 1;
+    }
+    return (0 == (p & 0x1));
+}
 
 /**
  *  @param *codebuffer is a valid pointer to 8080 assembly code
@@ -884,14 +896,14 @@ void Emulate8080Op(State8080* state)
             state->b = state->b + 1;
             state->cc.z = ((state->b) == 0);
             state->cc.s = ((state->b & 0x80) == 0x80);
-            state->cc.p = Parity(state->b);
+            state->cc.p = Parity(state->b, 8);
             state->cc.ac = ((state->b & 0xf) == 0xf);
             break;
         case 0x05: // DCR B
             state->b = state->b - 1;
             state->cc.z = ((state->b) == 0);
             state->cc.s = ((state->b & 0x80) == 0x80);
-            state->cc.p = Parity(state->b);
+            state->cc.p = Parity(state->b, 8);
             state->cc.ac = ((state->b & 0xf) == 0x0);
             break;
         case 0x06: // MVI B, byte
@@ -932,14 +944,14 @@ void Emulate8080Op(State8080* state)
             state->c = state->c + 1;
             state->cc.z = ((state->c) == 0);
             state->cc.s = ((state->c & 0x80) == 0x80);
-            state->cc.p = Parity(state->c);
+            state->cc.p = Parity(state->c, 8);
             state->cc.ac = ((state->c & 0xf) == 0xf);
             break;
         case 0x0D: // DCR C
             state->c = state->c - 1;
             state->cc.z = ((state->c) == 0);
             state->cc.s = ((state->c & 0x80) == 0x80);
-            state->cc.p = Parity(state->c);
+            state->cc.p = Parity(state->c, 8);
             state->cc.ac = ((state->c & 0xf) == 0x0);
             break;
         case 0x0E: // MVI C, byte
@@ -975,14 +987,14 @@ void Emulate8080Op(State8080* state)
             state->d = state->d + 1;
             state->cc.z = ((state->d) == 0);
             state->cc.s = ((state->d & 0x80) == 0x80);
-            state->cc.p = Parity(state->d);
+            state->cc.p = Parity(state->d, 8);
             state->cc.ac = ((state->d & 0xf) == 0xf);
             break;
         case 0x15: // DCR D
             state->d = state->d - 1;
             state->cc.z = ((state->d) == 0);
             state->cc.s = ((state->d & 0x80) == 0x80);
-            state->cc.p = Parity(state->d);
+            state->cc.p = Parity(state->d, 8);
             state->cc.ac = ((state->d & 0xf) == 0x0);
             break;
         case 0x16: // MVI D, byte
@@ -1023,14 +1035,14 @@ void Emulate8080Op(State8080* state)
             state->e = state->e + 1;
             state->cc.z = ((state->e) == 0);
             state->cc.s = ((state->e & 0x80) == 0x80);
-            state->cc.p = Parity(state->e);
+            state->cc.p = Parity(state->e, 8);
             state->cc.ac = ((state->e & 0xf) == 0xf);
             break;
         case 0x1D: // DCR E
             state->e = state->e - 1;
             state->cc.z = ((state->e) == 0);
             state->cc.s = ((state->e & 0x80) == 0x80);
-            state->cc.p = Parity(state->e);
+            state->cc.p = Parity(state->e, 8);
             state->cc.ac = ((state->e & 0xf) == 0x0);
             break;
         case 0x1E: // MVI E, byte
@@ -1059,14 +1071,14 @@ void Emulate8080Op(State8080* state)
             state->h = state->h + 1;
             state->cc.z = ((state->h) == 0);
             state->cc.s = ((state->h & 0x80) == 0x80);
-            state->cc.p = Parity(state->h);
+            state->cc.p = Parity(state->h, 8);
             state->cc.ac = ((state->h & 0xf) == 0xf);
             break;
         case 0x25: // DCR H
             state->h = state->h - 1;
             state->cc.z = ((state->h) == 0);
             state->cc.s = ((state->h & 0x80) == 0x80);
-            state->cc.p = Parity(state->h);
+            state->cc.p = Parity(state->h, 8);
             state->cc.ac = ((state->h & 0xf) == 0x0);
             break;
         case 0x26: // MVI H, byte
@@ -1092,14 +1104,14 @@ void Emulate8080Op(State8080* state)
             state->l = state->l + 1;
             state->cc.z = ((state->l) == 0);
             state->cc.s = ((state->l & 0x80) == 0x80);
-            state->cc.p = Parity(state->l);
+            state->cc.p = Parity(state->l, 8);
             state->cc.ac = ((state->l & 0xf) == 0xf);
             break;
         case 0x2D: // DCR L
             state->l = state->l - 1;
             state->cc.z = ((state->l) == 0);
             state->cc.s = ((state->l & 0x80) == 0x80);
-            state->cc.p = Parity(state->l);
+            state->cc.p = Parity(state->l, 8);
             state->cc.ac = ((state->l & 0xf) == 0x0);
             break;
         case 0x2E: // MVI l, byte
@@ -1134,7 +1146,7 @@ void Emulate8080Op(State8080* state)
             state->memory[offset] = state->memory[offset] + 1;
             state->cc.z = ((state->memory[offset]) == 0);
             state->cc.s = ((state->memory[offset] & 0x80) == 0x80);
-            state->cc.p = Parity(state->memory[offset]);
+            state->cc.p = Parity(state->memory[offset], 8);
             state->cc.ac = ((state->memory[offset] & 0xf) == 0xf);
             break;
         }
@@ -1144,7 +1156,7 @@ void Emulate8080Op(State8080* state)
             state->memory[offset] = state->memory[offset] - 1;
             state->cc.z = ((state->memory[offset]) == 0);
             state->cc.s = ((state->memory[offset] & 0x80) == 0x80);
-            state->cc.p = Parity(state->memory[offset]);
+            state->cc.p = Parity(state->memory[offset], 8);
             state->cc.ac = ((state->memory[offset] & 0xf) == 0x0);
             break;
         }
@@ -1183,14 +1195,14 @@ void Emulate8080Op(State8080* state)
             state->a = state->a + 1;
             state->cc.z = ((state->a) == 0);
             state->cc.s = ((state->a & 0x80) == 0x80);
-            state->cc.p = Parity(state->a);
+            state->cc.p = Parity(state->a, 8);
             state->cc.ac = ((state->a & 0xf) == 0xf);
             break;
         case 0x3D: // DCR A
             state->a = state->a - 1;
             state->cc.z = ((state->a) == 0);
             state->cc.s = ((state->a & 0x80) == 0x80);
-            state->cc.p = Parity(state->a);
+            state->cc.p = Parity(state->a, 8);
             state->cc.ac = ((state->a & 0xf) == 0x0);
             break;
         case 0x3E: // MVI A, byte
@@ -1462,7 +1474,7 @@ void Emulate8080Op(State8080* state)
                 state->cc.cy = 0;
 
             // Parity is handled by a subroutine
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
 
             // Auxiliary Carry
             if ((state->a & 0xf) + (state->b & 0xf) > 0xf)
@@ -1480,7 +1492,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->c & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1491,7 +1503,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->d & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1502,7 +1514,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->e & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1513,7 +1525,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->h & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1524,7 +1536,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->l & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1536,7 +1548,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->memory[offset] & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1547,7 +1559,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->a & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1558,7 +1570,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->b & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1569,7 +1581,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->c & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1580,7 +1592,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->d & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1591,7 +1603,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->e & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1602,7 +1614,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->h & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1613,7 +1625,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->l & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1625,7 +1637,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->memory[offset] & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1636,7 +1648,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (state->a & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1647,7 +1659,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1658,7 +1670,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1669,7 +1681,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->d) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1680,7 +1692,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->e) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1691,7 +1703,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->h) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1702,7 +1714,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->l) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1714,7 +1726,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->memory[offset]) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1725,7 +1737,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->a) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1736,7 +1748,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->b + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1747,7 +1759,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1758,7 +1770,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->d + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1769,7 +1781,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->e + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1780,7 +1792,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->h + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1791,7 +1803,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->l + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1803,7 +1815,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->memory[offset] + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -1814,7 +1826,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->a + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -2027,7 +2039,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2037,7 +2049,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2047,7 +2059,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2057,7 +2069,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2067,7 +2079,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2077,7 +2089,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2088,7 +2100,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2098,7 +2110,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             break;
         }
@@ -2150,7 +2162,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (opcode[1] & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -2211,7 +2223,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (opcode[1] & 0xf) + state->cc.cy) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -2273,7 +2285,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(opcode[1]) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -2325,7 +2337,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((answer & 0xff) == 0);
             state->cc.s = ((answer & 0x80) == 0x80);
             state->cc.cy = (answer > 0xff);
-            state->cc.p = Parity(answer & 0xff);
+            state->cc.p = Parity(answer & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(opcode[1] + state->cc.cy) & 0xf)) > 0xf);
             state->a = answer & 0xff;
             break;
@@ -2586,7 +2598,7 @@ void Emulate8080Op(State8080* state)
             state->cc.z = ((res & 0xff) == 0);
             state->cc.s = ((res & 0x80) == 0x80);
             state->cc.cy = (res > 0xff);
-            state->cc.p = Parity(res & 0xff);
+            state->cc.p = Parity(res & 0xff, 8);
             state->cc.ac = (((state->a & 0xf) + (-(state->c) & 0xf)) > 0xf);
             state->pc++; // for the data byte
             break;
