@@ -1896,6 +1896,10 @@ void Emulate8080Op(State8080* state)
                 // branch not taken
                 state->pc += 2;
             break;
+        case 0xD3: // OUT byte
+            // TODO skip for now
+            state->pc += 1;
+            break;
         case 0xD4: // CNC address
         {
             if (state->cc.cy == 0)
@@ -1943,6 +1947,10 @@ void Emulate8080Op(State8080* state)
             else
                 // branch not taken
                 state->pc += 2;
+            break;
+        case 0xDB: // IN byte
+            // TODO skip for now
+            state->pc += 1;
             break;
         case 0xDC: // CC address
         {
