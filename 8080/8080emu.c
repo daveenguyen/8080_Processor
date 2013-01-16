@@ -866,6 +866,12 @@ void Emulate8080Op(State8080* state)
             state->b = opcode[2];
             state->pc += 2; // Advance 2 more bytes
             break;
+        case 0x02: // STAX B
+        {
+            uint16_t pair = (state->b << 8) | (state->c);
+            state->memory[pair] = state->a;
+            break;
+        }
         case 0x03: // INX B
         {
             uint16_t pair = (state->b << 8) | (state->c);
@@ -908,6 +914,12 @@ void Emulate8080Op(State8080* state)
             state->l = pairHL & 0xf;
             break;
         }
+        case 0x0A: // LDAX B
+        {
+            uint16_t pair = (state->b << 8) | (state->c);
+            state->a = state->memory[pair];
+            break;
+        }
         case 0x0B: // DCX B
         {
             uint16_t pair = (state->b << 8) | (state->c);
@@ -945,6 +957,12 @@ void Emulate8080Op(State8080* state)
             state->d = opcode[2];
             state->pc += 2; // Advance 2 more bytes
             break;
+        case 0x12: // STAX D
+        {
+            uint16_t pair = (state->d << 8) | (state->e);
+            state->memory[pair] = state->a;
+            break;
+        }
         case 0x13: // INX D
         {
             uint16_t pair = (state->d << 8) | (state->e);
@@ -985,6 +1003,12 @@ void Emulate8080Op(State8080* state)
             state->cc.cy = (pairHL > 0xff);
             state->h = (pairHL & 0xf0) >> 8;
             state->l = pairHL & 0xf;
+            break;
+        }
+        case 0x1A: // LDAX D
+        {
+            uint16_t pair = (state->d << 8) | (state->e);
+            state->a = state->memory[pair];
             break;
         }
         case 0x1B: // DCX D
