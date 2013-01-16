@@ -940,6 +940,11 @@ void Emulate8080Op(State8080* state)
             state-> a = ((x & 1) << 7 | (x >> 1));
             state->cc.cy = ((x & 1) == 1);
         }
+        case 0x11: // LXI D, word
+            state->e = opcode[1];
+            state->d = opcode[2];
+            state->pc += 2; // Advance 2 more bytes
+            break;
         case 0x13: // INX D
         {
             uint16_t pair = (state->d << 8) | (state->e);
@@ -1014,6 +1019,11 @@ void Emulate8080Op(State8080* state)
             state-> a = ((state->cc.cy << 7) | (x >> 1));
             state->cc.cy = ((x & 1) == 1);
         }
+        case 0x21: // LXI H, word
+            state->l = opcode[1];
+            state->h = opcode[2];
+            state->pc += 2; // Advance 2 more bytes
+            break;
         case 0x23: // INX H
         {
             uint16_t pair = (state->h << 8) | (state->l);
@@ -1074,6 +1084,10 @@ void Emulate8080Op(State8080* state)
             break;
         case 0x2F: // CMA (not)
             state->a = ~state->a;
+            break;
+        case 0x31: // LXI SP, word
+            state->sp = (opcode[2] << 8) | (opcode[1]);
+            state->pc += 2; // Advance 2 more bytes
             break;
         case 0x33: // INX M
         {
