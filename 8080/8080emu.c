@@ -2659,6 +2659,16 @@ State8080* Init8080(void)
     return state;
 }
 
+void GenerateInterrupt(State8080* state, int interrupt_num)
+{
+    // perform "PUSH PC"
+    Push(state, (state->pc & 0xFF00) >> 8, (state->pc & 0xff));
+
+    // Set the PC to the low memory vector.
+    // This is identical to an "RST interrupt_num" instruction.
+    state->pc = 8 * interrupt_num;
+}
+
 int main (int argc, char**argv)
 {
     int done=0;
@@ -2673,6 +2683,18 @@ int main (int argc, char**argv)
     while (done == 0)
     {
         done = Emulate8080Op(state);
+
+        if ( time() - lastInterrupt > 1.0/60.0) // 1/60 seconds has elapsed
+        {
+            // only do an interrupt if they are enabled
+            if (state->int_enable)
+            {
+                GenerateInterrupt(state, 2); // Interrupt 2
+
+                // Save the time we did this
+                lastInterrupt = time();
+            }
+        }
     }
     return 0;
 }
