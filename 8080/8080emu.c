@@ -12,6 +12,17 @@ typedef struct ConditionCodes {
     uint8_t     pad:3;
 } ConditionCodes;
 
+// Space invaders I/O ports
+typedef struct Ports {
+    uint8_t     read1;
+    uint8_t     read2;
+    uint8_t     shift1;
+    uint8_t     shift0;
+
+    uint8_t     write2; // shift amount (bits 0,1,2)
+    uint8_t     write4; // shift data
+} Ports;
+
 typedef struct State8080 {
     uint8_t     a;
     uint8_t     b;
@@ -24,6 +35,7 @@ typedef struct State8080 {
     uint16_t    pc;
     uint8_t     *memory;
     struct      ConditionCodes      cc;
+    struct      Ports               port;
     uint8_t     int_enable;
 } State8080;
 
@@ -2265,9 +2277,12 @@ int Emulate8080Op(State8080* state)
                 state->pc += 2;
             break;
         case 0xD3: // OUT byte
-            // TODO skip for now
-            state->pc += 1;
+        {
+            uint8_t port = opcode[1];
+            MachineOUT(state, port);
+            state->pc++;
             break;
+        }
         case 0xD4: // CNC address
         {
             if (state->cc.cy == 0)
@@ -2322,9 +2337,12 @@ int Emulate8080Op(State8080* state)
                 state->pc += 2;
             break;
         case 0xDB: // IN byte
-            // TODO skip for now
-            state->pc += 1;
+        {
+            uint8_t port = opcode[1];
+            state->a = MachineIN(state, port);
+            state->pc++;
             break;
+        }
         case 0xDC: // CC address
         {
             if (state->cc.cy == 1)
@@ -2667,6 +2685,44 @@ void GenerateInterrupt(State8080* state, int interrupt_num)
     // Set the PC to the low memory vector.
     // This is identical to an "RST interrupt_num" instruction.
     state->pc = 8 * interrupt_num;
+}
+
+uint8_t MachineIN(State8080* state, uint8_t port)
+{
+    uint8_t a;
+    switch(port)
+    {
+        case 1:
+            a = state->port.read1;
+            break;
+        case 2:
+            a = state->port.read2;
+            break;
+        case 3:
+        {
+            uint16_t v = (state->port.shift1<<8) | state->port.shift0;
+            a = ((v >> (8 - state->port.write2)) & 0xff);
+            break;
+        }
+        default:
+            UnimplementedInstruction(state);
+            break;
+    }
+    return a;
+}
+
+void MachineOUT(State8080* state, uint8_t port)
+{
+    switch(port)
+    {
+        case 2:
+            state->port.write2 = state->a & 0x7;
+            break;
+        case 4:
+            state->port.shift0 = state->port.shift1;
+            state->port.shift1 = state->a;
+            break;
+    }
 }
 
 int main (int argc, char**argv)
